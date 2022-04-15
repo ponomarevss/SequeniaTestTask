@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Sequenia Test Task</string>
+    <string name="genres">Жанры</string>
+    <string name="films">Фильмы</string>
+</resources>

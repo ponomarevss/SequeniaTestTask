@@ -1,6 +1,8 @@
 package ru.ponomarevss.sequeniatesttask.ui.activity
 
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import moxy.MvpAppCompatActivity
@@ -30,6 +32,17 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         App.instance.appComponent.inject(this)
         vb = ActivityMainBinding.inflate(layoutInflater)
         setContentView(vb?.root)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+//            R.id.home -> { // хз почему так не работает
+            16908332  -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onResumeFragments() {

@@ -3,6 +3,7 @@ package ru.ponomarevss.sequeniatesttask.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
 import moxy.MvpAppCompatFragment
@@ -28,7 +29,7 @@ class FilmsFragment: MvpAppCompatFragment(), FilmsView, BackButtonListener {
         }
     }
 
-    var filmsAdapter: FilmsRVAdapter? = null
+    private var filmsAdapter: FilmsRVAdapter? = null
     private var vb: FragmentFilmsBinding? = null
 
     override fun onCreateView(
@@ -39,30 +40,39 @@ class FilmsFragment: MvpAppCompatFragment(), FilmsView, BackButtonListener {
         vb = it
     }.root
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        vb = null
-    }
-
     override fun init() {
         vb?.rvFilms?.layoutManager = GridLayoutManager(context, SPAN_COUNT)
         filmsAdapter = FilmsRVAdapter(presenter.filmsListPresenter, GlideImageLoader())
         vb?.rvFilms?.adapter = filmsAdapter
     }
 
+    override fun setTitle(text: String) {
+        activity?.title = text
+    }
+
+    override fun setHomeButton() {
+        val activity = activity as AppCompatActivity
+        val actionBar = activity.supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        vb = null
+    }
+
     override fun update() {
         filmsAdapter?.notifyDataSetChanged()
     }
 
-    override fun addChip(text: String) {
-        val chip = layoutInflater.inflate(R.layout.item_genre, vb?.chgGenres, false) as Chip
-        chip.text = text
-        chip.setOnCheckedChangeListener { buttonView, isChecked -> presenter.chipCheckedChangeListener(buttonView.text.toString(), isChecked) }
-        vb?.chgGenres?.addView(chip)
-    }
-
-    override fun setTitle(text: String) {
-        activity?.title = text
+    override fun addChips() {
+        presenter.genresList.map { genre ->
+            val chip = layoutInflater.inflate(R.layout.item_genre, vb?.chgGenres, false) as Chip
+            chip.text = genre.name
+            chip.isChecked = genre.isSelected
+            chip.setOnCheckedChangeListener { buttonView, isChecked -> presenter.chipCheckedChangeListener(buttonView.text.toString(), isChecked) }
+            vb?.chgGenres?.addView(chip)
+        }
     }
 
     override fun backPressed() = presenter.backPressed()

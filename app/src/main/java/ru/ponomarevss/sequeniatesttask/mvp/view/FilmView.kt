@@ -12,4 +12,5 @@ interface FilmView: MvpView {
     fun setRating(text: String)
     fun setDescription(text: String)
     fun loadImage(url: String)
+    fun setHomeButton()
 }

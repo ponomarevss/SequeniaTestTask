@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.google.android.material.chip.Chip
@@ -43,6 +44,11 @@ class FilmFragment : MvpAppCompatFragment(), FilmView, BackButtonListener {
 
     private var vb: FragmentFilmBinding? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,6 +64,12 @@ class FilmFragment : MvpAppCompatFragment(), FilmView, BackButtonListener {
 
     override fun setTitle(text: String) {
         activity?.title = text
+    }
+
+    override fun setHomeButton() {
+        val activity = activity as AppCompatActivity
+        val actionBar = activity.supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun setName(text: String) = with(vb) {

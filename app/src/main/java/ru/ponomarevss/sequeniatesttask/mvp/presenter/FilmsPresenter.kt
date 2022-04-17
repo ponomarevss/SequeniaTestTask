@@ -1,10 +1,10 @@
 package ru.ponomarevss.sequeniatesttask.mvp.presenter
 
-import android.util.Log
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.runBlocking
 import moxy.MvpPresenter
 import ru.ponomarevss.sequeniatesttask.mvp.model.entity.Film
+import ru.ponomarevss.sequeniatesttask.mvp.model.entity.Genre
 import ru.ponomarevss.sequeniatesttask.mvp.model.navigation.IScreens
 import ru.ponomarevss.sequeniatesttask.mvp.model.repo.IFilmsRepo
 import ru.ponomarevss.sequeniatesttask.mvp.presenter.list.IFilmsListPresenter
@@ -17,14 +17,9 @@ class FilmsPresenter : MvpPresenter<FilmsView>() {
         private const val TITLE = "Главная"
     }
 
-    @Inject
-    lateinit var router: Router
-
-    @Inject
-    lateinit var screens: IScreens
-
-    @Inject
-    lateinit var repo: IFilmsRepo
+    @Inject lateinit var router: Router
+    @Inject lateinit var screens: IScreens
+    @Inject lateinit var repo: IFilmsRepo
 
     inner class FilmsListPresenter : IFilmsListPresenter {
         val films = mutableListOf<Film>()
@@ -45,15 +40,19 @@ class FilmsPresenter : MvpPresenter<FilmsView>() {
 
     val filmsListPresenter = FilmsListPresenter()
     private val initialFilmsList = mutableListOf<Film>()
-    private val genres = mutableSetOf<String>()
-    private var currentGenre: String? = null
+    
 
+    val genresList = mutableListOf<Genre>()
+    
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         loadData()
+        setGenresList()
+        setFilmsListPresenter()
         setChips()
         viewState.init()
         viewState.setTitle(TITLE)
+        viewState.setHomeButton()
 
         filmsListPresenter.itemClickListener = {
             val film = filmsListPresenter.films[it.pos]
@@ -66,47 +65,65 @@ class FilmsPresenter : MvpPresenter<FilmsView>() {
         runBlocking {
             initialFilmsList.addAll(repo.getFilms())
         }
+    }
+    
+    private fun setFilmsListPresenter() {
         filmsListPresenter.films.clear()
         filmsListPresenter.films.addAll(initialFilmsList.sortedBy { it.localizedName })
         viewState.update()
     }
 
-    private fun setChips() {
-        getGenres()
-        genres.sorted().map {
-            viewState.addChip(it)
-        }
+    private fun setGenresList() {
+        val genres = mutableSetOf<String>()
+        initialFilmsList.map { genres.addAll(it.genres) }
+        genres.sorted().map { genresList.add(Genre(it)) }
     }
 
-    private fun getGenres(): MutableSet<String> = genres.apply {
-        genres.clear()
-        initialFilmsList.map {
-            genres.addAll(it.genres)
-        }
+    private fun setChips() {
+        viewState.addChips()
     }
 
     fun chipCheckedChangeListener(newGenre: String, isChecked: Boolean) {
         when {
-            isChecked -> currentGenre = newGenre
-            !isChecked && currentGenre == newGenre -> currentGenre = null
+            isChecked -> {
+                genresList.map {
+                    it.isSelected = it.name == newGenre
+                }
+            }
+            !isChecked -> {
+                genresList.map {
+                    if (it.name == newGenre && it.isSelected) {
+                        it.isSelected = false
+                    }
+                }
+            }
         }
-        filmsListPresenter.films.clear()
-        filmsListPresenter.films.addAll(filterFilmsList(currentGenre).sortedBy { it.localizedName })
-        viewState.update()
+
+        filterFilmsList()
     }
 
-    private fun filterFilmsList(filter: String?): List<Film> {
+    private fun filterFilmsList() {
+        var currentGenre: String? = null
         val filteredFilmsList = mutableListOf<Film>()
-        filter?.let {
+
+        genresList.map {
+            if (it.isSelected) {
+                currentGenre = it.name
+            }
+        }
+
+        currentGenre?.let {
             initialFilmsList.map {
-                if (it.genres.contains(filter)) {
+                if (it.genres.contains(currentGenre)) {
                     filteredFilmsList.add(it)
                 }
             }
         } ?: filteredFilmsList.addAll(initialFilmsList)
-        return filteredFilmsList
-    }
 
+        filmsListPresenter.films.clear()
+        filmsListPresenter.films.addAll(filteredFilmsList.sortedBy { it.localizedName })
+        viewState.update()
+    }
 
     fun backPressed(): Boolean {
         router.exit()

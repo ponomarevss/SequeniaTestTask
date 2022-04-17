@@ -1,5 +1,7 @@
 package ru.ponomarevss.sequeniatesttask.mvp.view
 
+import android.widget.CompoundButton
+import com.google.android.material.chip.Chip
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEnd
 import moxy.viewstate.strategy.alias.AddToEndSingle
@@ -8,6 +10,7 @@ import moxy.viewstate.strategy.alias.AddToEndSingle
 interface FilmsView: MvpView {
     fun init()
     fun update()
-    fun addChip(text: String)
+    fun addChips()
     fun setTitle(text: String)
+    fun setHomeButton()
 }

@@ -28,6 +28,7 @@ class FilmPresenter(val film: Film) : MvpPresenter<FilmView>() {
         viewState.setYear("$YEAR ${film.year.toString()}")
         film.rating?.let { viewState.setRating("$RATING $it") }
         film.description?.let { viewState.setDescription(it) }
+        viewState.setHomeButton()
     }
 
     fun backPressed(): Boolean {

@@ -2,4 +2,7 @@
     <string name="app_name">Sequenia Test Task</string>
     <string name="genres">Жанры</string>
     <string name="films">Фильмы</string>
+    <string name="name">Name:</string>
+    <string name="year">Year:</string>
+    <string name="rating">Rating:</string>
 </resources>

@@ -62,8 +62,12 @@ class FilmsPresenter : MvpPresenter<FilmsView>() {
 
     private fun loadData() {
         initialFilmsList.clear()
-        runBlocking {
-            initialFilmsList.addAll(repo.getFilms())
+        try {
+            runBlocking {
+                initialFilmsList.addAll(repo.getFilms())
+            }
+        } catch (e: Throwable) {
+            viewState.setAlert(e.message.toString())
         }
     }
     

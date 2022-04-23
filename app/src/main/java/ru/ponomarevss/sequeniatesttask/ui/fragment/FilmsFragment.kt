@@ -3,6 +3,7 @@ package ru.ponomarevss.sequeniatesttask.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.chip.Chip
@@ -73,6 +74,15 @@ class FilmsFragment: MvpAppCompatFragment(), FilmsView, BackButtonListener {
             chip.setOnCheckedChangeListener { buttonView, isChecked -> presenter.chipCheckedChangeListener(buttonView.text.toString(), isChecked) }
             vb?.chgGenres?.addView(chip)
         }
+    }
+
+    override fun setAlert(text: String) {
+        AlertDialog.Builder(requireContext())
+            .setMessage(text)
+            .setPositiveButton(android.R.string.cancel) { _, _ ->
+                backPressed()
+            }
+            .show()
     }
 
     override fun backPressed() = presenter.backPressed()

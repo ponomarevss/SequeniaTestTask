@@ -13,4 +13,5 @@ interface FilmsView: MvpView {
     fun addChips()
     fun setTitle(text: String)
     fun setHomeButton()
+    fun setAlert(text: String)
 }

@@ -36,8 +36,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-//            R.id.home -> { // хз почему так не работает
-            16908332  -> {
+            android.R.id.home -> {
                 onBackPressed()
                 true
             }

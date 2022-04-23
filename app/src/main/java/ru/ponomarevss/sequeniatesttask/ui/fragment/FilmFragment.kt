@@ -3,26 +3,16 @@ package ru.ponomarevss.sequeniatesttask.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import com.github.terrakok.cicerone.NavigatorHolder
-import com.google.android.material.chip.Chip
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
-import ru.ponomarevss.sequeniatesttask.R
 import ru.ponomarevss.sequeniatesttask.databinding.FragmentFilmBinding
-import ru.ponomarevss.sequeniatesttask.databinding.FragmentFilmsBinding
 import ru.ponomarevss.sequeniatesttask.mvp.model.entity.Film
-import ru.ponomarevss.sequeniatesttask.mvp.model.image.IImageLoader
 import ru.ponomarevss.sequeniatesttask.mvp.presenter.FilmPresenter
-import ru.ponomarevss.sequeniatesttask.mvp.presenter.FilmsPresenter
 import ru.ponomarevss.sequeniatesttask.mvp.view.FilmView
 import ru.ponomarevss.sequeniatesttask.ui.App
 import ru.ponomarevss.sequeniatesttask.ui.BackButtonListener
-import ru.ponomarevss.sequeniatesttask.ui.adapter.FilmsRVAdapter
 import ru.ponomarevss.sequeniatesttask.ui.image.GlideImageLoader
-import javax.inject.Inject
 
 class FilmFragment : MvpAppCompatFragment(), FilmView, BackButtonListener {
     companion object {

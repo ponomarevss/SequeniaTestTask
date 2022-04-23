@@ -3,34 +3,34 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="200dp"
-    android:layout_height="160dp"
+    android:layout_width="@dimen/film_item_width"
+    android:layout_height="@dimen/film_item_height"
     android:layout_gravity="center">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_margin="5dp"
-        app:cardCornerRadius="5dp"
+        android:layout_width="@dimen/card_width"
+        android:layout_height="@dimen/card_height"
+        android:layout_margin="@dimen/card_margin"
+        app:cardCornerRadius="@dimen/card_radius"
         android:layout_gravity="center">
 
         <ImageView
             android:id="@+id/iv_film"
-            android:layout_width="240dp"
-            android:layout_height="240dp"
+            android:layout_width="@dimen/image_width"
+            android:layout_height="@dimen/image_height"
             android:layout_gravity="center"/>
 
         <TextView
             android:id="@+id/tv_film"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/item_tv_height"
             android:layout_gravity="bottom"
             android:gravity="center"
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:textSize="15sp"
+            android:textSize="@dimen/main_text_size"
             android:alpha=".5"
             android:background="@color/black"
             tools:text="Film localized name"/>

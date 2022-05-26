@@ -1,7 +1,10 @@
 package ru.ponomarevss.sequeniatesttask.mvp.presenter
 
 import com.github.terrakok.cicerone.Router
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import moxy.MvpPresenter
 import ru.ponomarevss.sequeniatesttask.mvp.model.entity.Film
 import ru.ponomarevss.sequeniatesttask.mvp.model.entity.Genre
@@ -67,28 +70,32 @@ class FilmsPresenter : MvpPresenter<FilmsView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        loadData()
-        setGenresListPresenter()
-        setFilmsListPresenter()
-        viewState.init()
-        viewState.setTitle(TITLE)
-        viewState.setHomeButton()
+        CoroutineScope(Dispatchers.Main).launch {
+            loadData()
+            setGenresListPresenter()
+            setFilmsListPresenter()
+            viewState.init()
+            viewState.setTitle(TITLE)
+            viewState.setHomeButton()
 
-        filmsListPresenter.itemClickListener = {
-            val film = filmsListPresenter.films[it.pos]
-            router.navigateTo(screens.film(film))
+            filmsListPresenter.itemClickListener = {
+                val film = filmsListPresenter.films[it.pos]
+                router.navigateTo(screens.film(film))
+            }
         }
     }
 
-    private fun loadData() {
-        initialFilmsList.clear()
-        try {
-            runBlocking {
+    private suspend fun loadData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            initialFilmsList.clear()
+            try {
                 initialFilmsList.addAll(repo.getFilms())
+            } catch (e: Throwable) {
+                withContext(Dispatchers.Main) {
+                    viewState.setAlert(e.message.toString())
+                }
             }
-        } catch (e: Throwable) {
-            viewState.setAlert(e.message.toString())
-        }
+        }.join()
     }
     
     private fun setFilmsListPresenter() {

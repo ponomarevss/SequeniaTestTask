@@ -5,7 +5,7 @@ import ru.ponomarevss.sequeniatesttask.mvp.model.api.IDataSource
 import ru.ponomarevss.sequeniatesttask.mvp.model.entity.Film
 import java.io.IOException
 
-class RetrofitFilmsRepo(val api: IDataSource) : IFilmsRepo {
+class RetrofitFilmsRepo(private val api: IDataSource) : IFilmsRepo {
 
     override suspend fun getFilms(): List<Film> {
         try {

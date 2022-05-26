@@ -8,8 +8,10 @@ import ru.ponomarevss.sequeniatesttask.mvp.model.entity.Genre
 import ru.ponomarevss.sequeniatesttask.mvp.model.navigation.IScreens
 import ru.ponomarevss.sequeniatesttask.mvp.model.repo.IFilmsRepo
 import ru.ponomarevss.sequeniatesttask.mvp.presenter.list.IFilmsListPresenter
+import ru.ponomarevss.sequeniatesttask.mvp.presenter.list.IGenresListPresenter
 import ru.ponomarevss.sequeniatesttask.mvp.view.FilmsView
 import ru.ponomarevss.sequeniatesttask.mvp.view.list.FilmItemView
+import ru.ponomarevss.sequeniatesttask.mvp.view.list.GenreItemView
 import javax.inject.Inject
 
 class FilmsPresenter : MvpPresenter<FilmsView>() {
@@ -27,29 +29,47 @@ class FilmsPresenter : MvpPresenter<FilmsView>() {
 
         override fun bindView(view: FilmItemView) {
             val film = films[view.pos]
-            with(view) {
-                with(film) {
-                    setName(localizedName)
-                    loadImage(imageUrl)
-                }
-            }
+            view.setName(film.localizedName)
+            view.loadImage(film.imageUrl)
         }
 
         override fun getCount(): Int = films.size
     }
 
-    val filmsListPresenter = FilmsListPresenter()
-    private val initialFilmsList = mutableListOf<Film>()
-    
+    inner class GenresListPresenter : IGenresListPresenter {
+        val genres = mutableListOf<Genre>()
+        override var itemClickListener: ((GenreItemView) -> Unit)? = null
 
-    val genresList = mutableListOf<Genre>()
-    
+        override fun bindView(view: GenreItemView) {
+            val genre = genres[view.pos]
+            view.setName(genre.name)
+            view.setState(genre.isSelected)
+            view.setListener()
+        }
+
+        override fun buttonClicked(pos: Int) {
+            for (i in genres.indices) {
+                if (i == pos) {
+                    genres[i].isSelected = !genres[i].isSelected
+                } else
+                    genres[i].isSelected = false
+            }
+            viewState.updateGenres()
+            filterFilmsList()
+        }
+
+        override fun getCount(): Int = genres.size
+    }
+
+    private val initialFilmsList = mutableListOf<Film>()
+    val filmsListPresenter = FilmsListPresenter()
+    val genresListPresenter = GenresListPresenter()
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         loadData()
-        setGenresList()
+        setGenresListPresenter()
         setFilmsListPresenter()
-        setChips()
         viewState.init()
         viewState.setTitle(TITLE)
         viewState.setHomeButton()
@@ -74,43 +94,22 @@ class FilmsPresenter : MvpPresenter<FilmsView>() {
     private fun setFilmsListPresenter() {
         filmsListPresenter.films.clear()
         filmsListPresenter.films.addAll(initialFilmsList.sortedBy { it.localizedName })
-        viewState.update()
+        viewState.updateFilms()
     }
 
-    private fun setGenresList() {
-        val genres = mutableSetOf<String>()
-        initialFilmsList.map { genres.addAll(it.genres) }
-        genres.sorted().map { genresList.add(Genre(it)) }
-    }
-
-    private fun setChips() {
-        viewState.addChips()
-    }
-
-    fun chipCheckedChangeListener(newGenre: String, isChecked: Boolean) {
-        when {
-            isChecked -> {
-                genresList.map {
-                    it.isSelected = it.name == newGenre
-                }
-            }
-            !isChecked -> {
-                genresList.map {
-                    if (it.name == newGenre && it.isSelected) {
-                        it.isSelected = false
-                    }
-                }
-            }
-        }
-
-        filterFilmsList()
+    private fun setGenresListPresenter() {
+        val names = mutableSetOf<String>()
+        initialFilmsList.map { names.addAll(it.genres) }
+        genresListPresenter.genres.clear()
+        names.sorted().map { genresListPresenter.genres.add(Genre(it)) }
+        viewState.updateGenres()
     }
 
     private fun filterFilmsList() {
         var currentGenre: String? = null
         val filteredFilmsList = mutableListOf<Film>()
 
-        genresList.map {
+        genresListPresenter.genres.map {
             if (it.isSelected) {
                 currentGenre = it.name
             }
@@ -126,7 +125,7 @@ class FilmsPresenter : MvpPresenter<FilmsView>() {
 
         filmsListPresenter.films.clear()
         filmsListPresenter.films.addAll(filteredFilmsList.sortedBy { it.localizedName })
-        viewState.update()
+        viewState.updateFilms()
     }
 
     fun backPressed(): Boolean {

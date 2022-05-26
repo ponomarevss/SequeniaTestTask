@@ -1,7 +1,6 @@
 package ru.ponomarevss.sequeniatesttask.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.androidx.AppNavigator
@@ -18,7 +17,7 @@ import javax.inject.Inject
 class MainActivity : MvpAppCompatActivity(), MainView {
 
     @Inject lateinit var navigatorHolder: NavigatorHolder
-    val navigator = AppNavigator(this, R.id.container)
+    private val navigator = AppNavigator(this, R.id.container)
 
     private val presenter by moxyPresenter {
         MainPresenter().apply {

@@ -27,7 +27,7 @@ class FilmsRVAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = presenter.bindView(holder.apply { pos = position })
 
-    inner class ViewHolder(val vb: ItemFilmBinding) : RecyclerView.ViewHolder(vb.root), FilmItemView {
+    inner class ViewHolder(private val vb: ItemFilmBinding) : RecyclerView.ViewHolder(vb.root), FilmItemView {
 
         override fun setName(text: String) = with(vb) { tvFilm.text = text }
 

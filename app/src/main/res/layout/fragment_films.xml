@@ -2,7 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/kinda_black">
 
     <androidx.core.widget.NestedScrollView
@@ -27,11 +26,25 @@
                 android:text="@string/genres"
                 android:textAllCaps="false"/>
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chg_genres"
-                android:layout_height="wrap_content"
+            <LinearLayout
                 android:layout_width="match_parent"
-                app:singleSelection="true"/>
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_genres"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    />
+
+                <FrameLayout
+                    android:id="@+id/spacer"
+                    android:layout_width="0dp"
+                    android:layout_weight="6"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/btn_films"

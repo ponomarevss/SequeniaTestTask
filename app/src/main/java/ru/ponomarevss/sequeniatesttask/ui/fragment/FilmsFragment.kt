@@ -1,21 +1,23 @@
 package ru.ponomarevss.sequeniatesttask.ui.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.chip.Chip
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
-import ru.ponomarevss.sequeniatesttask.R
 import ru.ponomarevss.sequeniatesttask.databinding.FragmentFilmsBinding
 import ru.ponomarevss.sequeniatesttask.mvp.presenter.FilmsPresenter
 import ru.ponomarevss.sequeniatesttask.mvp.view.FilmsView
 import ru.ponomarevss.sequeniatesttask.ui.App
 import ru.ponomarevss.sequeniatesttask.ui.BackButtonListener
 import ru.ponomarevss.sequeniatesttask.ui.adapter.FilmsRVAdapter
+import ru.ponomarevss.sequeniatesttask.ui.adapter.GenresRVAdapter
 import ru.ponomarevss.sequeniatesttask.ui.image.GlideImageLoader
 
 class FilmsFragment: MvpAppCompatFragment(), FilmsView, BackButtonListener {
@@ -31,6 +33,7 @@ class FilmsFragment: MvpAppCompatFragment(), FilmsView, BackButtonListener {
     }
 
     private var filmsAdapter: FilmsRVAdapter? = null
+    private var genresAdapter: GenresRVAdapter? = null
     private var vb: FragmentFilmsBinding? = null
 
     override fun onCreateView(
@@ -45,6 +48,11 @@ class FilmsFragment: MvpAppCompatFragment(), FilmsView, BackButtonListener {
         vb?.rvFilms?.layoutManager = GridLayoutManager(context, SPAN_COUNT)
         filmsAdapter = FilmsRVAdapter(presenter.filmsListPresenter, GlideImageLoader())
         vb?.rvFilms?.adapter = filmsAdapter
+
+        vb?.rvGenres?.layoutManager = LinearLayoutManager(context)
+        genresAdapter = GenresRVAdapter(presenter.genresListPresenter)
+        vb?.rvGenres?.adapter = genresAdapter
+
     }
 
     override fun setTitle(text: String) {
@@ -62,17 +70,17 @@ class FilmsFragment: MvpAppCompatFragment(), FilmsView, BackButtonListener {
         vb = null
     }
 
-    override fun update() {
+    @SuppressLint("NotifyDataSetChanged")
+    override fun updateFilms() {
         filmsAdapter?.notifyDataSetChanged()
     }
 
-    override fun addChips() {
-        presenter.genresList.map { genre ->
-            val chip = layoutInflater.inflate(R.layout.item_genre, vb?.chgGenres, false) as Chip
-            chip.text = genre.name
-            chip.isChecked = genre.isSelected
-            chip.setOnCheckedChangeListener { buttonView, isChecked -> presenter.chipCheckedChangeListener(buttonView.text.toString(), isChecked) }
-            vb?.chgGenres?.addView(chip)
+    @SuppressLint("NotifyDataSetChanged")
+    override fun updateGenres() {
+        vb?.rvGenres?.let {
+            if (!it.isComputingLayout && it.scrollState == RecyclerView.SCROLL_STATE_IDLE) {
+                genresAdapter?.notifyDataSetChanged()
+            }
         }
     }
 

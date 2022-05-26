@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Widget.MaterialComponents.Chip.Choice"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:textAlignment="center"
-    android:checkable="true"
-    android:clickable="true"
-    android:focusable="true"
-    app:chipBackgroundColor="@color/bg_chip_state_list"
-    android:textColor="@color/white">
+    android:layout_margin="4dp"
+    app:cardCornerRadius="5dp">
 
-</com.google.android.material.chip.Chip>
+    <ToggleButton
+        android:id="@+id/btn_genre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@color/bg_chip_state_list"
+        android:textColor="@color/white"
+        android:textAllCaps="false">
+    </ToggleButton>
+</androidx.cardview.widget.CardView>

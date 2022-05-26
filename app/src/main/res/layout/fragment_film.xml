@@ -2,7 +2,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/kinda_black"
     android:orientation="vertical">
@@ -22,7 +21,8 @@
                 android:id="@+id/iv_film"
                 android:layout_width="0dp"
                 android:layout_weight="5"
-                android:layout_height="@dimen/film_iv_height"/>
+                android:layout_height="@dimen/film_iv_height"
+                android:contentDescription="@string/film_image" />
 
             <LinearLayout
                 android:layout_width="0dp"
